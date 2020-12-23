@@ -5,5 +5,7 @@
 	name = ani16september@gmail.com
 [color]
 	ui = auto
+[alias]
+	logb = log --all --graph --decorate
 [init]
 	defaultBranch = main
