@@ -1,3 +1,1 @@
-set number
-syntax enable
-colorscheme molokai
+/home/animesh/.vimrc
