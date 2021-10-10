@@ -1,1 +1,3 @@
-/home/animesh/.vimrc
+set number
+syntax enable
+colorscheme molokai
