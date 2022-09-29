@@ -125,6 +125,12 @@ export PATH="$HOME/gems/bin:$PATH"
 # postgres alias
 alias pgstart='sudo service postgresql start'
 alias runpg='sudo -u postgres psql'
+alias pgrestart='sudo service postgresql restart'
+alias pgstop='sudo service postgresql stop'
+
+#redis alias
+alias redistart='sudo service redis-server start'
+alias redistop='sudo service redis-server stop'
 
 # prettier-eslint-setup install
 alias eslint-prettier-setup='exec 3<&1;bash <&3 <(curl https://raw.githubusercontent.com/AnimeshRy/eslint-prettier-airbnb-react/master/eslint-prettier-config.sh 2> /dev/null)'
@@ -136,3 +142,8 @@ alias findndeletezone='find . -name "*.Identifier" -type f -delete'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# go
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
