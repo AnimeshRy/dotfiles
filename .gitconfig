@@ -6,6 +6,28 @@
 [color]
 	ui = auto
 [alias]
-	logb = log --all --graph --decorate
+	logb = log --all --graph --decorate;
+    gc="git checkout ";
+    gcm="git checkout master";
+    gs="git status";
+    gpull="git pull";
+    gf="git fetch";
+    gfa="git fetch --all";
+    gf="git fetch origin";
+    gpush="git push";
+    gpushf="git push -f";
+    gd="git diff";
+    ga="git add .";
+    glog="git log";
+    gb="git branch";
+    gbr="git branch remote"
+    gfr="git remote update"
+    gbn="git checkout -B "
+    grf="git reflog";
+    grh="git reset HEAD~" # last commit hard
+    gac="git add . && git commit -a -m "
+    gsu="git gpush --set-upstream origin "
+    glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --branches"ate
+
 [init]
 	defaultBranch = main
