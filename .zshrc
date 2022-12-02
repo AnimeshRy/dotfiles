@@ -138,6 +138,34 @@ alias eslint-prettier-setup='exec 3<&1;bash <&3 <(curl https://raw.githubusercon
 # delete zone identifier
 alias findndeletezone='find . -name "*.Identifier" -type f -delete'
 
+## npm aliases
+# alias ni="npm install";
+# alias nrs="npm run start -s --";
+# alias nrb="npm run build -s --";
+# alias nrd="npm run dev -s --";
+# alias nrt="npm run test -s --";
+# alias nrtw="npm run test:watch -s --";
+# alias nrv="npm run validate -s --";
+# alias rmn="rm -rf node_modules";
+# alias flush-npm="rm -rf node_modules && npm i && echo NPM is done";
+
+
+## docker
+alias di='docker images'
+alias drr='docker-compose restart'
+alias dup='docker-compose up'
+alias dcs='docker-compose stop'
+alias dcrm='docker-compose rm'
+alias dri='docker rmi -f $(docker images -a -q)'
+
+#kubernetes
+alias k='kubectl'
+alias kg='kubectl get'
+alias kgp='kubectl get pod'
+alias kgs='kubectl get services'
+alias kgd='kubectl get deployments'
+alias kgrs='kubectl get replicaset'
+
 # nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
