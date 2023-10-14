@@ -15,7 +15,12 @@ export ZSH="/home/animesh/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="amuse"
+ZSH_THEME="robbyrussell"
+#ZSH_THEME="cobalt2"
+#ZSH_THEME="gozilla"
+ZSH_AUTOSUGGEST_MANUAL_REBIND="true"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -166,6 +171,8 @@ alias kgs='kubectl get services'
 alias kgd='kubectl get deployments'
 alias kgrs='kubectl get replicaset'
 
+alias update_clock='sudo ntpdate time.windows.com'
+
 # nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -175,3 +182,17 @@ export NVM_DIR="$HOME/.nvm"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# nvim alias
+alias vim='nvim'
+alias vi='nvim'
+alias oldvim='vim'
+
+# pnpm
+export PNPM_HOME="/home/animesh/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+export TERM=xterm-256color
