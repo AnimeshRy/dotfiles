@@ -196,3 +196,4 @@ case ":$PATH:" in
 esac
 # pnpm end
 export TERM=xterm-256color
+alias lzd='lazydocker'
