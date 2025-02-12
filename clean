@@ -1,0 +1,139 @@
+#!/bin/bash
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}=== Starting Cleanup ===${NC}"
+
+# Function to remove a package
+remove_package() {
+    local package=$1
+    echo -e "${GREEN}Removing $package...${NC}"
+    if command -v apt &> /dev/null; then
+        sudo apt remove -y "$package"
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -R --noconfirm "$package"
+    elif command -v brew &> /dev/null; then
+        brew uninstall "$package"
+    fi
+}
+
+# Remove installed packages
+echo -e "${GREEN}Removing installed packages...${NC}"
+PACKAGES=(
+    build-essential
+    git
+    curl
+    wget
+    unzip
+    zip
+    tmux
+    zsh
+    stow
+    direnv
+    fzf
+    bat
+    ripgrep
+    jq
+    neovim
+    docker.io
+    docker-compose
+    python3
+    python3-pip
+    openssh-server
+    rsync
+    nmap
+    htop
+    btop
+    iperf3
+    net-tools
+    traceroute
+    nfs-common
+    lsof
+    iw
+    exfat-utils
+    cron
+    golang-go
+    gh
+)
+
+for package in "${PACKAGES[@]}"; do
+    remove_package "$package"
+done
+
+# Remove Oh My Zsh
+echo -e "${GREEN}Removing Oh My Zsh...${NC}"
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    rm -rf "$HOME/.oh-my-zsh"
+fi
+
+# Remove zsh plugins
+echo -e "${GREEN}Removing Zsh plugins...${NC}"
+rm -rf "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+
+# Remove nvm
+echo -e "${GREEN}Removing nvm...${NC}"
+rm -rf "$HOME/.nvm"
+
+# Remove global npm packages
+echo -e "${GREEN}Removing global npm packages...${NC}"
+if command -v npm &> /dev/null; then
+    npm uninstall -g pnpm typescript prettier @vercel/cli bun
+fi
+
+# Remove Rust
+echo -e "${GREEN}Removing Rust...${NC}"
+if command -v rustup &> /dev/null; then
+    rustup self uninstall -y
+fi
+
+# Remove AWS CLI
+echo -e "${GREEN}Removing AWS CLI...${NC}"
+if command -v aws &> /dev/null; then
+    sudo rm -rf /usr/local/aws-cli
+    sudo rm -f /usr/local/bin/aws
+    sudo rm -f /usr/local/bin/aws_completer
+fi
+
+# Remove Docker Buildx
+echo -e "${GREEN}Removing Docker Buildx...${NC}"
+rm -f ~/.docker/cli-plugins/docker-buildx
+
+# Remove TPM and tmux plugins
+echo -e "${GREEN}Removing TPM and tmux plugins...${NC}"
+rm -rf "$HOME/.tmux/plugins"
+
+# Unstow all dotfiles
+echo -e "${GREEN}Unstowing all dotfiles...${NC}"
+stow -D */
+
+# Remove uv
+echo -e "${GREEN}Removing uv...${NC}"
+rm -rf "$HOME/.local/bin/uv"
+
+# Reset shell to bash
+echo -e "${GREEN}Resetting shell to bash...${NC}"
+if [ "$SHELL" != "$(which bash)" ]; then
+    chsh -s "$(which bash)"
+fi
+
+# Clean apt cache if using apt
+if command -v apt &> /dev/null; then
+    echo -e "${GREEN}Cleaning apt cache...${NC}"
+    sudo apt clean
+    sudo apt autoremove -y
+fi
+
+# Remove docker group from user
+echo -e "${GREEN}Removing user from docker group...${NC}"
+sudo gpasswd -d $USER docker
+
+echo -e "${BLUE}=== Cleanup Complete! ===${NC}"
+echo -e "${GREEN}Important notes:${NC}"
+echo -e "1. Your shell has been reset to bash"
+echo -e "2. You may need to log out and back in for all changes to take effect"
+echo -e "3. Some configuration files in your home directory may need manual removal"
+echo -e "${RED}Warning: Some system-wide configurations may remain. Review carefully if needed.${NC}"

@@ -1,0 +1,180 @@
+#!/bin/bash
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}=== Starting Dotfiles Installation ===${NC}"
+
+# Function to check and install package manager
+install_package_manager() {
+    if ! command -v apt &> /dev/null && ! command -v pacman &> /dev/null && ! command -v brew &> /dev/null; then
+        echo -e "${RED}No supported package manager found. Please install one manually.${NC}"
+        exit 1
+    fi
+}
+
+# Function to install a package
+install_package() {
+    local package=$1
+    echo -e "${GREEN}Installing $package...${NC}"
+    if command -v apt &> /dev/null; then
+        sudo apt install -y "$package"
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -S --noconfirm "$package"
+    elif command -v brew &> /dev/null; then
+        brew install "$package"
+    fi
+}
+
+# Update system packages
+echo -e "${GREEN}Updating system packages...${NC}"
+if command -v apt &> /dev/null; then
+    sudo apt update && sudo apt upgrade -y
+elif command -v pacman &> /dev/null; then
+    sudo pacman -Syu --noconfirm
+fi
+
+# Install essential packages
+echo -e "${GREEN}Installing essential packages...${NC}"
+PACKAGES=(
+    build-essential
+    git
+    curl
+    wget
+    unzip
+    zip
+    tmux
+    zsh
+    stow
+    direnv
+    fzf
+    bat
+    ripgrep
+    jq
+    neovim
+    docker.io
+    docker-compose
+    python3
+    python3-pip
+    openssh-server
+    rsync
+    nmap
+    htop
+    btop
+    iperf3
+    net-tools
+    traceroute
+    nfs-common
+    lsof
+    iw
+    exfat-utils
+    cron
+)
+
+for package in "${PACKAGES[@]}"; do
+    install_package "$package"
+done
+
+# Install nvm (Node Version Manager)
+echo -e "${GREEN}Installing nvm...${NC}"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Add nvm to current shell
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install Node.js LTS
+echo -e "${GREEN}Installing Node.js LTS...${NC}"
+nvm install --lts
+nvm use --lts
+
+# Install global npm packages
+echo -e "${GREEN}Installing global npm packages...${NC}"
+npm install -g pnpm typescript prettier @vercel/cli bun
+
+# Install uv (Python package installer)
+echo -e "${GREEN}Installing uv...${NC}"
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install Go
+echo -e "${GREEN}Installing Go...${NC}"
+install_package golang-go
+
+# Install Rust
+echo -e "${GREEN}Installing Rust...${NC}"
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Install AWS CLI v2
+echo -e "${GREEN}Installing AWS CLI v2...${NC}"
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+rm -rf aws awscliv2.zip
+
+# Install GitHub CLI
+echo -e "${GREEN}Installing GitHub CLI...${NC}"
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install -y gh
+
+# Install Docker Buildx
+echo -e "${GREEN}Installing Docker Buildx...${NC}"
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/buildx/releases/download/v0.12.1/buildx-v0.12.1.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
+chmod a+x ~/.docker/cli-plugins/docker-buildx
+
+# Add user to docker group
+sudo usermod -aG docker $USER
+
+# Install Oh My Zsh
+echo -e "${GREEN}Installing Oh My Zsh...${NC}"
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+    echo -e "${GREEN}Oh My Zsh is already installed${NC}"
+fi
+
+# Install zsh plugins
+echo -e "${GREEN}Installing Zsh plugins...${NC}"
+ZSH_PLUGINS_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+# zsh-autosuggestions
+if [ ! -d "$ZSH_PLUGINS_DIR/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_PLUGINS_DIR/zsh-autosuggestions"
+fi
+
+# Set Zsh as default shell
+echo -e "${GREEN}Setting Zsh as default shell...${NC}"
+if [ "$SHELL" != "$(which zsh)" ]; then
+    chsh -s "$(which zsh)"
+fi
+
+# Install TPM if not already installed
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_DIR" ]; then
+    echo -e "${GREEN}Installing TPM...${NC}"
+    git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+else
+    echo -e "${GREEN}TPM is already installed${NC}"
+fi
+
+# Create necessary directories if they don't exist
+mkdir -p "$HOME/.config"
+
+# Stow dotfiles
+echo -e "${GREEN}Stowing dotfiles...${NC}"
+# First unstow everything to avoid conflicts
+stow -D */
+# Then restow everything
+stow */
+
+echo -e "${BLUE}=== Installation Complete! ===${NC}"
+echo -e "${GREEN}Important notes:${NC}"
+echo -e "1. Please log out and back in for docker group changes to take effect"
+echo -e "2. Remember to press prefix + I in tmux to install plugins"
+echo -e "3. Run 'source ~/.bashrc' or restart your terminal to use nvm"
+echo -e "4. Run 'nvm use --lts' to ensure you're using the LTS version of Node.js"
+echo -e "5. Your shell has been changed to Zsh. Log out and back in for the change to take effect"

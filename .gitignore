@@ -16,3 +16,7 @@ vim/.vim/plugged
 vim/.vim/undodir
 vim/.vim/spell
 dotfile_bk_*
+
+# Tmux plugins
+.config/tmux/plugins/*
+!.config/tmux/plugins/.gitkeep
