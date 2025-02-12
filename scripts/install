@@ -93,7 +93,7 @@ nvm use --lts
 
 # Install global npm packages
 echo -e "${GREEN}Installing global npm packages...${NC}"
-npm install -g pnpm typescript prettier @vercel/cli bun
+npm install -g pnpm typescript prettier bun
 
 # Install uv (Python package installer)
 echo -e "${GREEN}Installing uv...${NC}"
@@ -114,12 +114,6 @@ unzip awscliv2.zip
 sudo ./aws/install
 rm -rf aws awscliv2.zip
 
-# Install GitHub CLI
-echo -e "${GREEN}Installing GitHub CLI...${NC}"
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-sudo apt update
-sudo apt install -y gh
 
 # Install Docker Buildx
 echo -e "${GREEN}Installing Docker Buildx...${NC}"
@@ -149,7 +143,7 @@ fi
 # Set Zsh as default shell
 echo -e "${GREEN}Setting Zsh as default shell...${NC}"
 if [ "$SHELL" != "$(which zsh)" ]; then
-    chsh -s "$(which zsh)"
+    sudo chsh -s "$(which zsh)" $USER
 fi
 
 # Install TPM if not already installed
@@ -161,15 +155,13 @@ else
     echo -e "${GREEN}TPM is already installed${NC}"
 fi
 
-# Create necessary directories if they don't exist
-mkdir -p "$HOME/.config"
-
-# Stow dotfiles
-echo -e "${GREEN}Stowing dotfiles...${NC}"
-# First unstow everything to avoid conflicts
-stow -D */
-# Then restow everything
-stow */
+# Install lazydocker
+echo -e "${GREEN}Installing lazydocker...${NC}"
+LAZYDOCKER_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazydocker/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+curl -Lo lazydocker.tar.gz "https://github.com/jesseduffield/lazydocker/releases/latest/download/lazydocker_${LAZYDOCKER_VERSION}_Linux_x86_64.tar.gz"
+tar xf lazydocker.tar.gz lazydocker
+sudo mv lazydocker /usr/local/bin
+rm lazydocker.tar.gz
 
 echo -e "${BLUE}=== Installation Complete! ===${NC}"
 echo -e "${GREEN}Important notes:${NC}"
