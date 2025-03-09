@@ -186,3 +186,10 @@ export TERM=xterm-256color
 alias lzd='lazydocker'
 
 . "$HOME/.local/bin/env"
+
+# bun completions
+[ -s "/home/era5tone/.bun/_bun" ] && source "/home/era5tone/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
