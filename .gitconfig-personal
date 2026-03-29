@@ -1,0 +1,5 @@
+# Identity for GitHub (included via ~/.gitconfig includeIf when a remote URL matches github.com).
+# Set email to your GitHub address or GitHub noreply: https://github.com/settings/emails
+[user]
+	name = AnimeshRy
+	email = ani16september@gmail.com

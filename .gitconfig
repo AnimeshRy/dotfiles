@@ -1,8 +1,8 @@
 [user]
 	name = AnimeshRy
-	email = ani16september@gmail.com
+	email = animesh.gautam@1mg.com
 [email]
-	name = ani16september@gmail.com
+	name = animesh.gautam@1mg.com
 [color]
 	ui = auto
 [alias]
@@ -31,3 +31,13 @@
 	defaultBranch = main
 [core]
 	editor = nvim
+
+# Personal GitHub identity when any remote points at github.com (HTTPS or SSH).
+# HTTPS: literal prefix is fine. SSH: use :*/** not :** (see git help config / SO 74012449).
+# Bitbucket and other hosts keep the global [user] above (work).
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
+	path = ~/dotfiles/.gitconfig-personal
+[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+	path = ~/dotfiles/.gitconfig-personal
+[http]
+	sslCAInfo = /Users/animeshgautam/certs/combined-ca.pem
